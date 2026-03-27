@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weee! Indian — Social Response Hub</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f7f7f5;
+  --color-background-tertiary: #f0efe9;
+  --color-background-info: #e6f1fb;
+  --color-background-danger: #fcebeb;
+  --color-background-success: #eaf3de;
+  --color-background-warning: #faeeda;
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-text-info: #185fa5;
+  --color-text-danger: #a32d2d;
+  --color-text-success: #3b6d11;
+  --color-text-warning: #854f0b;
+  --color-border-tertiary: rgba(0,0,0,0.1);
+  --color-border-secondary: rgba(0,0,0,0.2);
+  --color-border-primary: rgba(0,0,0,0.3);
+  --color-border-info: #378add;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'Courier New', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #1e1e1c;
+    --color-background-secondary: #2a2a28;
+    --color-background-tertiary: #141412;
+    --color-background-info: #0c3358;
+    --color-background-danger: #3b1010;
+    --color-background-success: #1a3008;
+    --color-background-warning: #3d2804;
+    --color-text-primary: #f0efe9;
+    --color-text-secondary: #a6a49e;
+    --color-text-tertiary: #6e6c67;
+    --color-text-info: #85b7eb;
+    --color-text-danger: #f09595;
+    --color-text-success: #97c459;
+    --color-text-warning: #ef9f27;
+    --color-border-tertiary: rgba(255,255,255,0.08);
+    --color-border-secondary: rgba(255,255,255,0.15);
+    --color-border-primary: rgba(255,255,255,0.25);
+    --color-border-info: #378add;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+}
+
+.dash {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.topbar {
+  grid-column: 1 / -1;
+  background: var(--color-background-primary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  padding: 0 20px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.brand { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.brand-sub { font-size: 12px; color: var(--color-text-secondary); }
+.platform-badges { display: flex; gap: 6px; }
+.pbadge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+.pbadge.ig { background: #fce4ec; color: #880e4f; }
+.pbadge.fb { background: #e3f2fd; color: #0d47a1; }
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #2e7d32; display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.live-label { font-size: 12px; color: var(--color-text-secondary); }
+.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--color-text-info); }
+
+.sidebar {
+  background: var(--color-background-primary);
+  border-right: 0.5px solid var(--color-border-tertiary);
+  padding: 16px 0;
+}
+.nav-section { margin-bottom: 20px; }
+.nav-label { font-size: 10px; font-weight: 500; color: var(--color-text-tertiary); padding: 0 16px 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); transition: background 0.15s; }
+.nav-item:hover { background: var(--color-background-secondary); }
+.nav-item.active { background: var(--color-background-info); color: var(--color-text-info); font-weight: 500; }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-badge { margin-left: auto; font-size: 10px; padding: 2px 6px; border-radius: 10px; background: var(--color-background-danger); color: var(--color-text-danger); font-weight: 500; }
+.nav-badge.green { background: var(--color-background-success); color: var(--color-text-success); }
+
+.main { padding: 20px; overflow-y: auto; }
+
+.stats-row { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; margin-bottom: 20px; }
+.stat-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 14px; }
+.stat-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat-delta { font-size: 11px; margin-top: 4px; }
+.stat-delta.up { color: var(--color-text-success); }
+.stat-delta.down { color: var(--color-text-danger); }
+.stat-delta.warn { color: var(--color-text-warning); }
+
+.content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+.inbox-panel, .detail-panel { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+
+.panel-header { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.panel-actions { display: flex; gap: 8px; }
+.btn-sm { font-size: 11px; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; color: var(--color-text-secondary); transition: background 0.15s; }
+.btn-sm:hover { background: var(--color-background-secondary); }
+.btn-sm.active { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+
+.filter-row { padding: 8px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-chip { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
+.filter-chip:hover { border-color: var(--color-border-secondary); }
+.filter-chip.on { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+
+.inbox-list { max-height: 540px; overflow-y: auto; }
+.inbox-item { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; transition: background 0.12s; display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: start; }
+.inbox-item:hover { background: var(--color-background-secondary); }
+.inbox-item.selected { background: var(--color-background-info); }
+
+.avatar-sm { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+.av-purple { background: #EEEDFE; color: #3C3489; }
+.av-teal { background: #E1F5EE; color: #085041; }
+.av-coral { background: #FAECE7; color: #712B13; }
+.av-blue { background: #E6F1FB; color: #0C447C; }
+.av-amber { background: #FAEEDA; color: #633806; }
+.av-pink { background: #FBEAF0; color: #72243E; }
+.av-green { background: #EAF3DE; color: #27500A; }
+
+.msg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+.msg-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.msg-time { font-size: 11px; color: var(--color-text-tertiary); }
+.msg-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.msg-meta { display: flex; gap: 5px; margin-top: 5px; align-items: center; flex-wrap: wrap; }
+
+.tag { font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 500; }
+.tag-website { background: #E6F1FB; color: #185FA5; }
+.tag-complaint { background: #FCEBEB; color: #A32D2D; }
+.tag-appreciation { background: #EAF3DE; color: #3B6D11; }
+.tag-order { background: #FAEEDA; color: #854F0B; }
+.tag-collab { background: #EEEDFE; color: #3C3489; }
+.tag-product { background: #FBEAF0; color: #993556; }
+.tag-scam { background: #F1EFE8; color: #5F5E5A; }
+.tag-advice { background: #E1F5EE; color: #0F6E56; }
+.tag-critical { background: #E24B4A; color: #fff; }
+
+.prio-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.prio-critical { background: #E24B4A; }
+.prio-high { background: #EF9F27; }
+.prio-medium { background: #378ADD; }
+.prio-low { background: #97C459; }
+
+.detail-panel { display: flex; flex-direction: column; }
+.detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; color: var(--color-text-tertiary); text-align: center; min-height: 300px; }
+.detail-empty-icon { font-size: 32px; margin-bottom: 12px; }
+.detail-content { flex: 1; padding: 16px; overflow-y: auto; max-height: calc(100vh - 200px); }
+
+.msg-bubble { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 12px 14px; margin-bottom: 14px; }
+.msg-bubble-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
+.msg-bubble-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.msg-bubble-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.55; }
+.msg-bubble-footer { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+.ai-response-box { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; margin-bottom: 14px; }
+.ai-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.ai-badge { font-size: 10px; font-weight: 500; background: #EEEDFE; color: #3C3489; padding: 3px 8px; border-radius: 10px; }
+.ai-confidence { font-size: 11px; color: var(--color-text-secondary); margin-left: auto; }
+.ai-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.55; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-bottom: 12px; }
+.ai-text.editing { border: 1.5px solid var(--color-border-info); background: var(--color-background-primary); }
+.ai-text textarea { width: 100%; background: transparent; border: none; outline: none; font-size: 13px; color: var(--color-text-primary); line-height: 1.55; font-family: var(--font-sans); resize: none; min-height: 80px; }
+.ai-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-approve { font-size: 12px; padding: 6px 14px; border-radius: var(--border-radius-md); border: none; background: #2e7d32; color: #fff; cursor: pointer; font-weight: 500; transition: opacity 0.15s; display: flex; align-items: center; gap: 5px; }
+.btn-approve:hover { opacity: 0.88; }
+.btn-edit { font-size: 12px; padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.15s; }
+.btn-edit:hover { background: var(--color-background-secondary); }
+.btn-escalate { font-size: 12px; padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-warning); color: var(--color-text-warning); cursor: pointer; font-weight: 500; transition: opacity 0.15s; display: flex; align-items: center; gap: 5px; }
+.btn-escalate:hover { opacity: 0.85; }
+.btn-discard { font-size: 12px; padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-danger); cursor: pointer; transition: background 0.15s; }
+.btn-discard:hover { background: var(--color-background-danger); }
+
+.routing-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; margin-bottom: 12px; }
+.routing-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; font-weight: 500; }
+.routing-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; }
+.routing-key { color: var(--color-text-secondary); }
+.routing-val { color: var(--color-text-primary); font-weight: 500; }
+
+.sla-bar { height: 4px; border-radius: 2px; background: var(--color-border-tertiary); overflow: hidden; margin-top: 4px; }
+.sla-fill { height: 100%; border-radius: 2px; transition: width 0.6s; }
+.sla-fill.green { background: #63992a; }
+.sla-fill.amber { background: #BA7517; }
+.sla-fill.red { background: #E24B4A; }
+
+.hinglish-toggle { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+.toggle-switch { width: 28px; height: 16px; background: var(--color-border-secondary); border-radius: 8px; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0; }
+.toggle-switch.on { background: #378ADD; }
+.toggle-knob { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+.toggle-switch.on .toggle-knob { transform: translateX(12px); }
+
+/* Escalation Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 100; }
+.modal-overlay.open { display: flex; }
+.esc-card { background: var(--color-background-primary); border-radius: var(--border-radius-lg); padding: 24px; width: 380px; max-width: 90vw; border: 0.5px solid var(--color-border-secondary); }
+.esc-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; color: var(--color-text-primary); }
+.esc-sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 16px; }
+.esc-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.esc-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); cursor: pointer; transition: all 0.15s; }
+.esc-option:hover { border-color: var(--color-border-secondary); background: var(--color-background-secondary); }
+.esc-option.selected { border-color: var(--color-border-info); background: var(--color-background-info); }
+.esc-option-icon { font-size: 16px; }
+.esc-option-text { font-size: 12px; color: var(--color-text-primary); font-weight: 500; }
+.esc-option-sub { font-size: 11px; color: var(--color-text-secondary); }
+.esc-note textarea { width: 100%; font-size: 12px; font-family: var(--font-sans); padding: 8px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); resize: none; height: 64px; color: var(--color-text-primary); background: var(--color-background-primary); margin-bottom: 14px; }
+.esc-btns { display: flex; justify-content: flex-end; gap: 8px; }
+.btn-cancel { font-size: 12px; padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.btn-cancel:hover { background: var(--color-background-secondary); }
+.btn-confirm-esc { font-size: 12px; padding: 7px 14px; border-radius: var(--border-radius-md); border: none; background: #EF9F27; color: #412402; font-weight: 500; cursor: pointer; }
+.btn-confirm-esc:hover { opacity: 0.9; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 12px 16px; font-size: 13px; color: var(--color-text-primary); box-shadow: 0 2px 16px rgba(0,0,0,0.1); display: none; z-index: 200; align-items: center; gap: 10px; min-width: 200px; }
+.toast.show { display: flex; }
+.toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.toast-dot.green { background: #2e7d32; }
+.toast-dot.amber { background: #EF9F27; }
+.toast-dot.red { background: #E24B4A; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dash { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .content-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .topbar { padding: 0 12px; }
+  .main { padding: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="dash">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="brand">Weee! Indian &mdash; Social Response Hub</div>
+        <div class="brand-sub">AI-assisted moderation dashboard</div>
+      </div>
+      <div class="platform-badges">
+        <span class="pbadge ig">Instagram</span>
+        <span class="pbadge fb">Facebook</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span><span class="live-dot"></span><span class="live-label">Live</span></span>
+      <div class="avatar">SP</div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">Inbox</div>
+      <div class="nav-item active" onclick="setView('all',this)"><span class="nav-icon">📥</span> All messages <span class="nav-badge" id="nb-all">12</span></div>
+      <div class="nav-item" onclick="setView('pending',this)"><span class="nav-icon">⏳</span> Pending approval <span class="nav-badge" id="nb-pending">5</span></div>
+      <div class="nav-item" onclick="setView('escalated',this)"><span class="nav-icon">🚨</span> Escalated <span class="nav-badge">2</span></div>
+      <div class="nav-item" onclick="setView('sent',this)"><span class="nav-icon">✓</span> Sent <span class="nav-badge green">8</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Automation</div>
+      <div class="nav-item" onclick="showToast('green','Feature coming soon')"><span class="nav-icon">⚙</span> Response rules</div>
+      <div class="nav-item" onclick="showToast('green','Feature coming soon')"><span class="nav-icon">📊</span> Analytics</div>
+      <div class="nav-item" onclick="showToast('green','Feature coming soon')"><span class="nav-icon">🗂</span> Template library</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Channels</div>
+      <div class="nav-item"><span class="nav-icon">📸</span> Instagram DMs</div>
+      <div class="nav-item"><span class="nav-icon">📘</span> FB Page DMs</div>
+      <div class="nav-item"><span class="nav-icon">💬</span> Post comments</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Messages today</div>
+        <div class="stat-value" id="st-total">47</div>
+        <div class="stat-delta up">+12 from yesterday</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Auto-resolved</div>
+        <div class="stat-value" id="st-auto">31</div>
+        <div class="stat-delta up">66% rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending review</div>
+        <div class="stat-value" id="st-pending">5</div>
+        <div class="stat-delta warn">Avg wait 18 min</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Escalated</div>
+        <div class="stat-value" id="st-esc">2</div>
+        <div class="stat-delta down">1 critical</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg response time</div>
+        <div class="stat-value">4.2<span style="font-size:14px;font-weight:400"> min</span></div>
+        <div class="stat-delta up">vs 2.3 hr manual</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Inbox -->
+      <div class="inbox-panel">
+        <div class="panel-header">
+          <div class="panel-title">Inbox <span style="color:var(--color-text-tertiary);font-weight:400;font-size:12px" id="inbox-count">(12)</span></div>
+          <div class="panel-actions">
+            <button class="btn-sm active" onclick="sortBy('time',this)">Recent</button>
+            <button class="btn-sm" onclick="sortBy('priority',this)">Priority</button>
+            <button class="btn-sm" onclick="sortBy('channel',this)">Channel</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="filter-chip on" onclick="toggleFilter(this,'all')">All</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'complaint')">Complaint</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'website')">Website query</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'appreciation')">Appreciation</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'order')">Order</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'collab')">Collab</span>
+          <span class="filter-chip" onclick="toggleFilter(this,'scam')">Scam</span>
+        </div>
+        <div class="inbox-list" id="inbox-list"></div>
+      </div>
+
+      <!-- Detail -->
+      <div class="detail-panel" id="detail-panel">
+        <div class="panel-header">
+          <div class="panel-title" id="detail-title">Message detail</div>
+          <div class="panel-actions" id="detail-header-actions"></div>
+        </div>
+        <div id="detail-body">
+          <div class="detail-empty">
+            <div class="detail-empty-icon">💬</div>
+            <div style="font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">Select a message</div>
+            <div style="font-size:12px;color:var(--color-text-tertiary)">Click any message to review the AI-generated response and take action</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Escalation Modal -->
+<div class="modal-overlay" id="esc-modal">
+  <div class="esc-card">
+    <div class="esc-title">Escalate message</div>
+    <div class="esc-sub">Choose who should handle this message</div>
+    <div class="esc-options">
+      <div class="esc-option selected" onclick="selectEscOption(this)">
+        <span class="esc-option-icon">🎧</span>
+        <div><div class="esc-option-text">Customer Service</div><div class="esc-option-sub">Order issues, refunds, quality complaints</div></div>
+      </div>
+      <div class="esc-option" onclick="selectEscOption(this)">
+        <span class="esc-option-icon">👤</span>
+        <div><div class="esc-option-text">Social Media Manager</div><div class="esc-option-sub">Viral threads, sensitive topics, brand risk</div></div>
+      </div>
+      <div class="esc-option" onclick="selectEscOption(this)">
+        <span class="esc-option-icon">⚖</span>
+        <div><div class="esc-option-text">Legal / Management</div><div class="esc-option-sub">Threats, hate speech, press inquiries</div></div>
+      </div>
+      <div class="esc-option" onclick="selectEscOption(this)">
+        <span class="esc-option-icon">📣</span>
+        <div><div class="esc-option-text">Marketing Team</div><div class="esc-option-sub">Sponsorship, partnership, B2B requests</div></div>
+      </div>
+    </div>
+    <textarea placeholder="Add a note for the team (optional)..." style="width:100%;font-size:12px;font-family:inherit;padding:8px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);resize:none;height:64px;color:var(--color-text-primary);background:var(--color-background-primary);margin-bottom:14px;"></textarea>
+    <div class="esc-btns">
+      <button class="btn-cancel" onclick="closeEsc()">Cancel</button>
+      <button class="btn-confirm-esc" onclick="confirmEsc()">Escalate now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-dot green" id="toast-dot"></span>
+  <span id="toast-text">Response sent</span>
+</div>
+
+<script>
+const messages = [
+  { id:1, name:"Priya Sharma", handle:"@priya.sharma92", avatar:"av-purple", channel:"IG DM", time:"2 min ago", category:"complaint", priority:"high",
+    text:"Weee! gave me expired ghee in my last order. The expiry was 3 months ago!! This is completely unacceptable. I want a refund immediately.",
+    aiResponse:"Hi Priya, we sincerely apologise for this experience — receiving an expired product is absolutely unacceptable and not the standard we hold ourselves to 🙏 We're escalating this to our quality team right now. Could you please share your order number so we can process a full refund immediately? We'll also make sure this doesn't happen again.",
+    confidence:94, routing:"CS Handoff (T2)", sla:"< 30 min", slaUsed:40, autoApprove:false,
+    hinglish:"Priya ji, bahut maafi chahte hain — expired product bilkul accept nahi hai. Apna order number share karein, hum turant refund process karte hain. 🙏", tags:["complaint"], tier:"T2" },
+  { id:2, name:"Rahul Verma", handle:"@rahulv_nj", avatar:"av-teal", channel:"FB Comment", time:"8 min ago", category:"website", priority:"medium",
+    text:"Do you deliver to New Jersey? I've been looking for authentic Indian groceries and can't find anything decent near me.",
+    aiResponse:"Hi Rahul! Yes, we do deliver to New Jersey 🎉 You can check your exact zip code coverage by downloading the Weee! app and entering your address. We carry 1,000+ authentic Indian products — from Aashirvaad atta to Haldiram's snacks! Download here: weee.com/app",
+    confidence:98, routing:"Auto (T1)", sla:"< 1 hr", slaUsed:15, autoApprove:true,
+    hinglish:"Haan Rahul bhai! New Jersey mein delivery hoti hai 🎉 App download karein aur apna zip check karein!", tags:["website"], tier:"T1" },
+  { id:3, name:"Sunita Patel", handle:"@sunita_foodie", avatar:"av-coral", channel:"IG Comment", time:"15 min ago", category:"appreciation", priority:"low",
+    text:"Your page reminds me so much of home! Growing up in Ahmedabad and now living in Texas, finding these products here feels like magic ✨",
+    aiResponse:"That means the world to us, Sunita 🏠🧡 Bringing a little piece of home to every Indian household across the US — that's exactly why we do this. Welcome to the Weee! family, and enjoy every bite that takes you back!",
+    confidence:99, routing:"Auto (T1)", sla:"< 4 hrs", slaUsed:8, autoApprove:true,
+    hinglish:"Yeh sunke dil khush ho gaya Sunita ji! Ghar ki yaad toh hoti hai — isliye hum hain! 🙏", tags:["appreciation"], tier:"T1" },
+  { id:4, name:"Anonymous DM", handle:"@meta_support_01", avatar:"av-blue", channel:"FB DM", time:"22 min ago", category:"scam", priority:"high",
+    text:"IMPORTANT NOTICE: Your Facebook page has been flagged for policy violations. Click here to verify your account within 24 hours or your page will be permanently disabled: bit.ly/verify-now",
+    aiResponse:"⛔ DO NOT RESPOND OR CLICK ANY LINKS. This is a phishing scam. Steps: 1) Screenshot this message, 2) Report to Meta immediately, 3) Alert page admin, 4) Log in Incident Register.",
+    confidence:100, routing:"T3 — Escalate to Page Admin + IT", sla:"< 15 min", slaUsed:85, autoApprove:false,
+    hinglish:"", tags:["scam"], tier:"T3", critical:true },
+  { id:5, name:"Anil Kumar", handle:"@anil_chicago", avatar:"av-amber", channel:"IG DM", time:"31 min ago", category:"order", priority:"high",
+    text:"My order #WEE-29847 was supposed to arrive yesterday but it still hasn't come. I ordered fresh vegetables and I'm worried they'll be spoiled. Please help!",
+    aiResponse:"Hi Anil, we're really sorry about the delay on order #WEE-29847 🙏 We understand this is especially concerning for fresh vegetables. Our customer service team is looking into this right now and will contact you within the next 30 minutes with an update. Thank you for your patience.",
+    confidence:91, routing:"CS Handoff (T2)", sla:"< 30 min", slaUsed:55, autoApprove:false,
+    hinglish:"", tags:["order"], tier:"T2" },
+  { id:6, name:"Meera Iyer", handle:"@meera.iyer_sf", avatar:"av-pink", channel:"IG Comment", time:"45 min ago", category:"website", priority:"medium",
+    text:"Does Weee! accept EBT payments? I have a lot of Indian grocery needs and this would make such a difference for my family.",
+    aiResponse:"Hi Meera! Great news — yes, Weee! does accept EBT for eligible grocery items 🛍️ You can add your EBT card in the app under Settings → Payment Methods. Let us know if you run into any issues and we'll help right away!",
+    confidence:97, routing:"Auto (T1)", sla:"< 2 hrs", slaUsed:20, autoApprove:true,
+    hinglish:"", tags:["website"], tier:"T1" },
+  { id:7, name:"Deepak Nair", handle:"@deepaknair_la", avatar:"av-green", channel:"FB Comment", time:"1 hr ago", category:"website", priority:"medium",
+    text:"Can you please add Wagh Bakri Masala Chai to the app? I've been looking everywhere and this is the only brand my family drinks!",
+    aiResponse:"We love Wagh Bakri too, Deepak! 😄 We've noted your request for Wagh Bakri Masala Chai — the more people ask, the faster we can add it! Tag a chai-loving friend below 👇 In the meantime, check out our current Masala Chai selection in the Indian store.",
+    confidence:95, routing:"Auto (T1) + log demand", sla:"< 2 hrs", slaUsed:25, autoApprove:true,
+    hinglish:"Wagh Bakri ke liye note kar lete hain Deepak ji! Doston ko tag karein 👇", tags:["website"], tier:"T1" },
+  { id:8, name:"Kavya Reddy", handle:"@kavya_austin", avatar:"av-purple", channel:"IG DM", time:"1.5 hr ago", category:"collab", priority:"medium",
+    text:"Hi! I'm a food content creator with 45K followers on Instagram focused on Indian recipes and South Asian lifestyle. Would love to collaborate with Weee!",
+    aiResponse:"Hi Kavya! We love your content niche 🙏 We'd love to explore a collaboration! Please fill out our creator partnership form here: weee.com/creators — our marketing team reviews all applications and will be in touch within 5 business days.",
+    confidence:93, routing:"Auto + flag to Marketing (45K followers)", sla:"< 4 hrs", slaUsed:10, autoApprove:true,
+    hinglish:"", tags:["collab"], tier:"T1" },
+  { id:9, name:"Ravi Shankar", handle:"@ravi_houston", avatar:"av-teal", channel:"FB DM", time:"2 hr ago", category:"complaint", priority:"medium",
+    text:"Minimum order is way too high. I just want to buy a few things but I have to pay $60 minimum? Most Indian families can't afford this.",
+    aiResponse:"We hear you, Ravi 🙏 We understand the minimum order can feel like a barrier. Our model covers delivery costs from our warehouse to your door — but check out our weekly deals and promo codes in the app, which can make a big basket much more affordable!",
+    confidence:87, routing:"Auto (T1) + human review flag", sla:"< 2 hrs", slaUsed:30, autoApprove:false,
+    hinglish:"", tags:["complaint"], tier:"T1" },
+  { id:10, name:"Farida Khan", handle:"@farida_nyc", avatar:"av-coral", channel:"IG Comment", time:"2.5 hr ago", category:"website", priority:"low",
+    text:"Are you only for Indian products or do you also carry Pakistani grocery brands? Asking for my family in Queens.",
+    aiResponse:"Great question, Farida! Weee! celebrates all South Asian cultures 🌏 Our Indian store carries products loved across India, Pakistan, Bangladesh, Sri Lanka and more — from National Foods to Ahmed pickles to MTR. Everyone is welcome! Browse our full South Asian selection in the app.",
+    confidence:88, routing:"Human review recommended (ethnicity/identity)", sla:"< 2 hrs", slaUsed:18, autoApprove:false,
+    hinglish:"", tags:["website"], tier:"T2" },
+  { id:11, name:"Suresh Menon", handle:"@suresh_seattle", avatar:"av-amber", channel:"FB DM", time:"3 hr ago", category:"website", priority:"low",
+    text:"Hi there! How do I place an order? I've been trying to figure out the app but can't find the Indian section anywhere.",
+    aiResponse:"Namaste Suresh! 🙏 Ordering is super easy — here's how: 1) Download the Weee! app, 2) Tap 'Browse Stores', 3) Select 'Indian Store', 4) Add items to cart and checkout! Here's the app link: weee.com/app — let us know if you need any help!",
+    confidence:99, routing:"Auto (T1)", sla:"< 1 hr", slaUsed:12, autoApprove:true,
+    hinglish:"Bahut aasaan hai Suresh ji! App mein 'Indian Store' select karein aur shopping shuru! 🎉", tags:["website"], tier:"T1" },
+  { id:12, name:"Nisha Gupta", handle:"@nisha_boston", avatar:"av-pink", channel:"IG DM", time:"4 hr ago", category:"appreciation", priority:"low",
+    text:"I already use Weee! and absolutely love it. Great service! You guys have changed the way I grocery shop as an NRI. Keep up the amazing work!",
+    aiResponse:"Thank you so much, Nisha! 🧡 Comments like yours fuel our entire team. It means everything to know Weee! is making life better for the Indian community in the US. We'll keep working to bring more of India to your doorstep!",
+    confidence:99, routing:"Auto (T1)", sla:"< 4 hrs", slaUsed:5, autoApprove:true,
+    hinglish:"", tags:["appreciation"], tier:"T1" },
+];
+
+let selectedId = null;
+let editingId = null;
+let currentFilter = 'all';
+let hinglishOn = false;
+let escalateTarget = null;
+
+function getTagClass(cat){const m={complaint:'tag-complaint',website:'tag-website',appreciation:'tag-appreciation',order:'tag-order',collab:'tag-collab',product:'tag-product',scam:'tag-scam',advice:'tag-advice'};return m[cat]||'tag-website';}
+function getTagLabel(cat){const m={complaint:'Complaint',website:'Website query',appreciation:'Appreciation',order:'Order query',collab:'Collab',product:'Product request',scam:'⚠ Scam',advice:'Advice'};return m[cat]||cat;}
+function getPrioClass(p){const m={critical:'prio-critical',high:'prio-high',medium:'prio-medium',low:'prio-low'};return m[p]||'prio-medium';}
+
+function renderInbox(filter) {
+  filter = filter || currentFilter;
+  const list = document.getElementById('inbox-list');
+  const msgs = messages.filter(m => filter === 'all' || m.category === filter);
+  list.innerHTML = msgs.map(m => `
+    <div class="inbox-item ${selectedId===m.id?'selected':''}" onclick="selectMsg(${m.id})">
+      <div class="avatar-sm ${m.avatar}" style="margin-top:2px">${m.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div>
+      <div>
+        <div class="msg-header">
+          <span class="msg-name">${m.name}</span>
+          <span class="msg-time">${m.time}</span>
+        </div>
+        <div class="msg-text">${m.text}</div>
+        <div class="msg-meta">
+          <span class="tag ${getTagClass(m.category)}">${getTagLabel(m.category)}</span>
+          <span class="prio-dot ${getPrioClass(m.priority)}"></span>
+          <span style="font-size:10px;color:var(--color-text-tertiary)">${m.channel}</span>
+          ${m.autoApprove?'<span style="font-size:10px;color:var(--color-text-success)">Auto</span>':''}
+          ${m.critical?'<span class="tag tag-critical">Critical</span>':''}
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('inbox-count').textContent = '(' + msgs.length + ')';
+}
+
+function selectMsg(id) {
+  selectedId = id;
+  const m = messages.find(x => x.id === id);
+  renderInbox();
+  renderDetail(m);
+}
+
+function renderDetail(m) {
+  document.getElementById('detail-title').textContent = m.name;
+  document.getElementById('detail-header-actions').innerHTML = `<span style="font-size:11px;color:var(--color-text-tertiary)">${m.channel} · ${m.time}</span>`;
+
+  const slaColor = m.slaUsed > 75 ? 'red' : m.slaUsed > 45 ? 'amber' : 'green';
+  const tierBadge = m.tier==='T3'
+    ? '<span style="font-size:10px;font-weight:500;background:#FCEBEB;color:#A32D2D;padding:2px 6px;border-radius:10px">T3 Critical</span>'
+    : m.tier==='T2'
+    ? '<span style="font-size:10px;font-weight:500;background:#FAEEDA;color:#854F0B;padding:2px 6px;border-radius:10px">T2 CS Handoff</span>'
+    : '<span style="font-size:10px;font-weight:500;background:#EAF3DE;color:#3B6D11;padding:2px 6px;border-radius:10px">T1 Auto</span>';
+
+  const responseText = (hinglishOn && m.hinglish) ? m.hinglish : m.aiResponse;
+  const isEditing = editingId === m.id;
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-content">
+      <div class="msg-bubble">
+        <div class="msg-bubble-header">
+          <span class="msg-bubble-name">${m.name} <span style="font-weight:400;color:var(--color-text-secondary);font-size:12px">${m.handle}</span></span>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">${'<span class="tag '+getTagClass(m.category)+'">'+getTagLabel(m.category)+'</span>'}${tierBadge}</div>
+        </div>
+        <div class="msg-bubble-text">"${m.text}"</div>
+        <div class="msg-bubble-footer">
+          <span style="font-size:11px;color:var(--color-text-tertiary)">${m.channel} · ${m.time}</span>
+        </div>
+      </div>
+
+      <div class="routing-card">
+        <div class="routing-label">Routing &amp; SLA</div>
+        <div class="routing-row"><span class="routing-key">Routing</span><span class="routing-val">${m.routing}</span></div>
+        <div class="routing-row"><span class="routing-key">SLA target</span><span class="routing-val">${m.sla}</span></div>
+        <div class="routing-row"><span class="routing-key">SLA used</span><span class="routing-val">${m.slaUsed}%</span></div>
+        <div class="sla-bar"><div class="sla-fill ${slaColor}" style="width:${m.slaUsed}%"></div></div>
+      </div>
+
+      <div class="ai-response-box">
+        <div class="ai-header">
+          <span class="ai-badge">AI response</span>
+          ${m.hinglish ? `<div class="hinglish-toggle"><div class="toggle-switch ${hinglishOn?'on':''}" onclick="toggleHinglish(${m.id})"><div class="toggle-knob"></div></div><span>Hinglish</span></div>` : ''}
+          <span class="ai-confidence" style="margin-left:auto">Confidence: ${m.confidence}%</span>
+        </div>
+        ${isEditing
+          ? `<div class="ai-text editing"><textarea id="edit-area-${m.id}">${responseText}</textarea></div>`
+          : `<div class="ai-text">${responseText}</div>`}
+        ${m.critical ? `<div style="background:#FCEBEB;border-radius:var(--border-radius-md);padding:10px 12px;font-size:12px;color:#A32D2D;margin-bottom:10px;line-height:1.5">⛔ <strong>Do not reply to this message.</strong> Follow escalation protocol. Screenshot, report to Meta, and alert your manager within 15 minutes.</div>` : ''}
+        <div class="ai-actions">
+          ${!m.critical ? `<button class="btn-approve" onclick="approveMsg(${m.id})">✓ Approve &amp; send</button>` : ''}
+          ${!m.critical ? `<button class="btn-edit" onclick="toggleEdit(${m.id})">${isEditing ? '✓ Save' : '✎ Edit'}</button>` : ''}
+          <button class="btn-escalate" onclick="openEscalate(${m.id})">↑ Escalate</button>
+          ${!m.critical ? `<button class="btn-discard" onclick="discardMsg(${m.id})">Discard</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleHinglish(id) {
+  hinglishOn = !hinglishOn;
+  renderDetail(messages.find(x => x.id === id));
+}
+
+function toggleEdit(id) {
+  if (editingId === id) {
+    const area = document.getElementById('edit-area-' + id);
+    if (area) messages.find(x => x.id === id).aiResponse = area.value;
+    editingId = null;
+  } else {
+    editingId = id;
+  }
+  renderDetail(messages.find(x => x.id === id));
+}
+
+function approveMsg(id) {
+  const msg = messages.find(x => x.id === id);
+  showToast('green', 'Response sent to ' + msg.name);
+  messages.splice(messages.findIndex(x => x.id === id), 1);
+  selectedId = null; editingId = null;
+  updateStats(); renderInbox();
+  document.getElementById('detail-body').innerHTML = '<div class="detail-empty"><div class="detail-empty-icon">✓</div><div style="font-size:13px;font-weight:500;color:var(--color-text-success);margin-bottom:4px">Response sent</div><div style="font-size:12px;color:var(--color-text-tertiary)">Select another message to review</div></div>';
+  document.getElementById('detail-title').textContent = 'Message detail';
+  document.getElementById('detail-header-actions').innerHTML = '';
+}
+
+function discardMsg(id) {
+  const msg = messages.find(x => x.id === id);
+  showToast('amber', 'Message from ' + msg.name + ' discarded');
+  messages.splice(messages.findIndex(x => x.id === id), 1);
+  selectedId = null; editingId = null;
+  updateStats(); renderInbox();
+  document.getElementById('detail-body').innerHTML = '<div class="detail-empty"><div class="detail-empty-icon">🗑</div><div style="font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">Message discarded</div></div>';
+  document.getElementById('detail-title').textContent = 'Message detail';
+  document.getElementById('detail-header-actions').innerHTML = '';
+}
+
+function openEscalate(id) {
+  escalateTarget = id;
+  document.getElementById('esc-modal').classList.add('open');
+}
+function closeEsc() {
+  document.getElementById('esc-modal').classList.remove('open');
+  escalateTarget = null;
+}
+function selectEscOption(el) {
+  document.querySelectorAll('.esc-option').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function confirmEsc() {
+  const sel = document.querySelector('.esc-option.selected .esc-option-text');
+  const team = sel ? sel.textContent : 'team';
+  showToast('amber', 'Escalated to ' + team);
+  closeEsc();
+  if (escalateTarget) {
+    messages.splice(messages.findIndex(x => x.id === escalateTarget), 1);
+    selectedId = null; editingId = null;
+    updateStats(); renderInbox();
+    document.getElementById('detail-body').innerHTML = '<div class="detail-empty"><div class="detail-empty-icon">↑</div><div style="font-size:13px;font-weight:500;color:var(--color-text-warning);margin-bottom:4px">Escalated to ' + team + '</div></div>';
+    document.getElementById('detail-title').textContent = 'Message detail';
+    document.getElementById('detail-header-actions').innerHTML = '';
+  }
+}
+
+function toggleFilter(el, val) {
+  document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+  currentFilter = val;
+  renderInbox(val);
+}
+
+function setView(v, el) {
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentFilter = 'all';
+  document.querySelectorAll('.filter-chip').forEach((x, i) => x.classList.toggle('on', i === 0));
+  if (v === 'pending') { currentFilter = 'complaint'; document.querySelectorAll('.filter-chip')[1].classList.add('on'); document.querySelectorAll('.filter-chip')[0].classList.remove('on'); }
+  else if (v === 'escalated') { currentFilter = 'scam'; document.querySelectorAll('.filter-chip')[6].classList.add('on'); document.querySelectorAll('.filter-chip')[0].classList.remove('on'); }
+  renderInbox(currentFilter);
+}
+
+function sortBy(key, el) {
+  document.querySelectorAll('.btn-sm').forEach(x => x.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (key === 'priority') { const o={critical:0,high:1,medium:2,low:3}; messages.sort((a,b)=>(o[a.priority]||3)-(o[b.priority]||3)); }
+  else if (key === 'channel') { messages.sort((a,b) => a.channel.localeCompare(b.channel)); }
+  renderInbox();
+}
+
+function updateStats() {
+  document.getElementById('st-total').textContent = messages.length + 35;
+  document.getElementById('st-pending').textContent = messages.filter(x => !x.autoApprove).length;
+  document.getElementById('nb-all').textContent = messages.length;
+  document.getElementById('nb-pending').textContent = messages.filter(x => !x.autoApprove).length;
+  document.getElementById('st-auto').textContent = 47 - messages.length;
+  document.getElementById('st-esc').textContent = messages.filter(x => x.critical).length;
+}
+
+function showToast(color, text) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-dot').className = 'toast-dot ' + color;
+  document.getElementById('toast-text').textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+renderInbox('all');
+</script>
+</body>
+</html>
